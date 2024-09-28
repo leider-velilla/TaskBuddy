@@ -1,0 +1,45 @@
+<div class="lista-container">
+  <h2>Tareas</h2>
+
+  <div class="filtro-tareas">
+    <button mat-button (click)="mostrarTodasLasTareas()">Mostrar Todas</button>
+    <button mat-button (click)="filtrarTareasPorEstadoTarea(false)">Mostrar Pendientes</button>
+    <button mat-button (click)="filtrarTareasPorEstadoTarea(true)">Mostrar Completadas</button>
+  </div>
+
+  <div class="tareas-contenedor">
+    <div class="tareas-lista">
+      <mat-card *ngFor="let tarea of tareas" class="tarea-card">
+        <mat-card-header>
+          <mat-card-title>{{ tarea.titulo }}</mat-card-title>
+          <mat-card-subtitle>Fecha Límite: {{ tarea.fechaLimite | date }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="tarea-info">
+            <p>Completada: {{ tarea.tareaCompletada ? 'Sí' : 'No' }}</p>
+            <button mat-button (click)="cambiarEstadoTareaCompletada(tarea.id)">
+              {{ tarea.tareaCompletada ? 'Marcar como Pendiente' : 'Marcar como Completada' }}
+            </button>
+          </div>
+
+          <p><strong>Personas Asignadas:</strong></p>
+          <div class="personas">
+            <ul>
+              <li *ngFor="let personaAsignada of tarea.personasAsignadas">
+                {{ personaAsignada.nombre }} (Edad: {{ personaAsignada.edad }})
+                <p>Habilidades:</p>
+                <ul>
+                  <li *ngFor="let habilidad of personaAsignada.habilidades">{{ habilidad }}</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <p *ngIf="tareas.length === 0">No hay tareas disponibles.</p>
+
+  <button mat-button (click)="abrirPopup()">Crear Tarea</button>
+</div>

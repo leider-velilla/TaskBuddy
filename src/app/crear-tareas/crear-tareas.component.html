@@ -1,0 +1,96 @@
+<form [formGroup]="formularioTareas" (ngSubmit)="onSubmit()">
+    <mat-card></mat-card>
+    <mat-card-title>Crear nueva tarea</mat-card-title>
+    
+    <mat-card-content>
+        <!-- Título de la tarea -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label for="titulo">Título de la tarea:</mat-label>
+            <input matInput id="titulo" formControlName="titulo" (focus)="formularioTareas.get('titulo')?.markAsUntouched()">
+            <mat-error *ngIf="formularioTareas.get('titulo')?.invalid && formularioTareas.get('titulo')?.touched">
+                <ng-container *ngIf="formularioTareas.get('titulo')?.errors?.['required']">El título es obligatorio.</ng-container>
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Fecha limite -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Fecha límite</mat-label>
+            <input matInput [matDatepicker]="picker" id="fechaLimite" formControlName="fechaLimite">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="formularioTareas.get('fechaLimite')?.invalid && formularioTareas.get('fechaLimite')?.touched">
+                <ng-container *ngIf="formularioTareas.get('fechaLimite')?.errors?.['required']">La fecha límite es obligatoria.</ng-container>
+                <ng-container *ngIf="formularioTareas.get('fechaLimite')?.errors?.['fechaInvalida']">La fecha no puede ser menor a la actual.</ng-container>
+            </mat-error>
+        </mat-form-field>
+ 
+        <div formArrayName="personasAsignadas">
+            <mat-divider></mat-divider>
+            <ng-container *ngFor="let personaAsignada of personasAsignadas.controls; let i = index" [formGroupName]="i">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Persona {{ i + 1 }} </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <!-- Nombre -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Nombre</mat-label>
+                        <input matInput id="nombre-{{i}}" formControlName="nombre" placeholder="Nombre completo">
+                        <mat-error *ngIf="personaAsignada.get('nombre')?.invalid && personaAsignada.get('nombre')?.touched">
+                            <ng-container *ngIf="personaAsignada.get('nombre')?.errors?.['required']">El nombre es obligatorio.</ng-container>
+                            <ng-container *ngIf="personaAsignada.get('nombre')?.errors?.['minlength']">El nombre debe tener al menos 5 caracteres.</ng-container>
+                            <ng-container *ngIf="personaAsignada.get('nombre')?.errors?.['nombreDuplicado']">El nombre no puede repetirse.</ng-container>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Edad -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Edad</mat-label>
+                        <input matInput type="number" id="edad-{{i}}" formControlName="edad" placeholder="Edad">
+                        <mat-error *ngIf="personaAsignada.get('edad')?.invalid && personaAsignada.get('edad')?.touched">
+                            <ng-container *ngIf="personaAsignada.get('edad')?.errors?.['required']">La edad es obligatoria.</ng-container>
+                            <ng-container *ngIf="personaAsignada.get('edad')?.errors?.['min']">La persona debe ser mayor de 18 años.</ng-container>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Habilidades -->
+                    <div formArrayName="habilidades">
+                        <ng-container *ngFor="let habilidad of obtenerControlHabilidad(i).controls; let j = index">
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Habilidad</mat-label>
+                                <input matInput id="habilidad-{{i}}-{{j}}" [formControlName]="j" placeholder="Especifica una habilidad">
+                                <button mat-icon-button color="warn" (click)="eliminarHabilidad(i, j)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-error *ngIf="habilidad.invalid && habilidad.touched">
+                                    <ng-container *ngIf="habilidad.errors?.['required']">Se requiere al menos una habilidad.</ng-container>
+                                </mat-error>
+                            </mat-form-field>
+                        </ng-container>
+                        <button mat-button type="button" color="primary" (click)="agregarHabilidad(i)">
+                            <mat-icon>add</mat-icon> Agregar habilidad
+                        </button>
+                    </div>
+
+                    <button mat-button color="warn" type="button" (click)="eliminarPersonaAsignada(i)">
+                        <mat-icon>delete</mat-icon> Eliminar persona
+                    </button>
+                </mat-expansion-panel>
+            </ng-container>
+        </div>
+    
+        <button mat-button type="button" color="primary" (click)="agregarPersonaAsignada()" class="btn-agregar-persona">
+            <mat-icon>person_add</mat-icon> Agregar persona
+        </button>
+
+    </mat-card-content>
+
+    <mat-card-actions MatCardActions.align="end">
+        <button mat-button color="accent" type="submit" [disabled]="formularioTareas.invalid">
+            Crear tarea
+        </button>
+        <button mat-button mat-dialog-close color="warn">
+            Cerrar
+        </button>
+    </mat-card-actions>
+</form>

@@ -1,0 +1,44 @@
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-form-field {
+  padding-top: 6px;
+}
+
+mat-card {
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+mat-card-title {
+  margin-bottom: 16px;
+  padding: 16px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 250px;
+  max-height: calc(120vh - 250px);
+  overflow-y: auto;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+form {
+  min-height: 500px;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.btn-agregar-persona {
+  padding-top: 10px;
+}
